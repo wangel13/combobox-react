@@ -8,3 +8,5 @@
   placeholder="Choose country" // плейсхолдер
 />
 ```
+
+Ссылка на демо - [DEMO](http://paintings.rugorod.com/)
