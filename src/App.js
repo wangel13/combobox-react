@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Combobox from './components/combobox/Combobox';
 import logo from './logo.svg';
-import './App.css';
+import './App.styl';
 
 class App extends Component {
   render() {

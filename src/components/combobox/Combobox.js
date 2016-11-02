@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Combo.css';
+import './Combo.styl';
 
 class Combobox extends Component {
   constructor(props) {
