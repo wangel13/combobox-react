@@ -1,16 +1,36 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { setText, clearText } from '../../actions';
+import { mobileAndTabletcheck } from '../../utils'
 import './Combo.styl';
+
+let createHandlers = function(dispatch) {
+  let onSetText = function(data) {
+    dispatch(setText(data))
+  };
+
+  let onClearText = function() {
+    dispatch(clearText())
+  };
+
+  return {
+    onSetText,
+    onClearText
+  };
+}
 
 class Combobox extends Component {
   constructor(props) {
-    super();
+    super(props);
+    this.handlers = createHandlers(this.props.dispatch);
 
     this.state = {
       value: '',
       suggestions: props.suggestions,
       newSuggestions: props.suggestions,
       inputFocused: false,
-      inputUpper: false
+      inputUpper: false,
+      isMobile: mobileAndTabletcheck()
     };
   }
 
@@ -19,6 +39,7 @@ class Combobox extends Component {
     const newsuggestions = suggestions.filter( item =>
       item.toLowerCase().startsWith(event.target.value.toLowerCase())
     ).slice(0, 10);
+    this.handlers.onSetText(event.target.value);
     this.setState({
       value: event.target.value,
       newSuggestions: newsuggestions
@@ -26,6 +47,11 @@ class Combobox extends Component {
   }
 
   handleChoose = (value) => {
+    if (value === '') {
+      this.handlers.onClearText();
+    } else {
+      this.handlers.onSetText(value);
+    }
     this.setState({
       value: value,
       inputFocused: false,
@@ -33,7 +59,28 @@ class Combobox extends Component {
     });
   }
 
+  handleChooseMobile = (value) => {
+    this.handlers.onSetText(value);
+    this.setState({
+      value: value,
+      inputFocused: false
+    });
+  }
+
   handleFocus = (event) => {
+    if(this.state.isMobile) {
+      if (document.createEvent) {
+        const e = document.createEvent('MouseEvents');
+        e.initMouseEvent('mousedown', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        this.selectInput[0].dispatchEvent(e);
+      } else if (this.selectInput.fireEvent) {
+        this.selectInput[0].fireEvent('onmousedown');
+      }
+      this.setState({
+        inputFocused: true
+      });
+      return;
+    }
     this.textInput.focus();
     this.setState({
       inputFocused: true
@@ -57,6 +104,29 @@ class Combobox extends Component {
     });
   }
 
+  renderDropdownMobile = (suggestions) => {
+    return (
+      <select
+        className="b-combo-input b-combo-input--select"
+        ref={(select) => this.selectInput = select}
+        value={this.state.value}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}
+        onChange={(e) => this.handleChooseMobile(e.target.value)}
+      >
+        {suggestions.map((item, index) => {
+          return (
+            <option key={index}>
+              {item}
+            </option>
+          )
+        })}
+        <option onClick={() => this.handleChoose('')} selected >
+        </option>
+      </select>
+    )
+  }
+
   renderDropdown = (suggestions) => {
     return (
       <div className={"b-combo-suggestions " + (this.state.inputFocused ? 'active' : '')}>
@@ -77,6 +147,16 @@ class Combobox extends Component {
   }
 
   render() {
+    if(this.state.isMobile) {
+      return (
+        <div className={"b-combo " + (this.state.inputUpper ? 'upper' : '')} onClick={this.handleFocus}>
+          {this.renderDropdownMobile(this.state.newSuggestions)}
+          <div className={"b-combo-placeholder " + (this.state.value !== '' ? 'active' : '')}>
+            {this.props.placeholder}
+          </div>
+        </div>
+      )
+    }
     return (
       <div className={"b-combo " + (this.state.inputUpper ? 'upper' : '')} onClick={this.handleFocus}>
         <input
@@ -87,13 +167,13 @@ class Combobox extends Component {
           onBlur={this.handleBlur}
           onChange={this.handleChange}
         />
-      <div className={"b-combo-placeholder " + (this.state.value !== '' ? 'active' : '')}>
+        <div className={"b-combo-placeholder " + (this.state.value !== '' ? 'active' : '')}>
           {this.props.placeholder}
         </div>
         {this.renderDropdown(this.state.newSuggestions)}
       </div>
-    );
+    )
   }
 }
 
-export default Combobox;
+export default connect()(Combobox);
