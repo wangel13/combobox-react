@@ -68,19 +68,6 @@ class Combobox extends Component {
   }
 
   handleFocus = (event) => {
-    if(this.state.isMobile) {
-      if (document.createEvent) {
-        const e = document.createEvent('MouseEvents');
-        e.initMouseEvent('mousedown', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        this.selectInput[0].dispatchEvent(e);
-      } else if (this.selectInput.fireEvent) {
-        this.selectInput[0].fireEvent('onmousedown');
-      }
-      this.setState({
-        inputFocused: true
-      });
-      return;
-    }
     this.textInput.focus();
     this.setState({
       inputFocused: true

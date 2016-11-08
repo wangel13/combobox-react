@@ -5,11 +5,11 @@
   top 20px
   left 10px
   padding 0 10px
-  transition top 0.5s cubic-bezier(.55, 0, .1, 1);
+  transition top 0.5s cubic-bezier(.55, 0, .1, 1)
 
 .b-combo-input:focus + .b-combo-placeholder, .b-combo-placeholder.active
   top -8px
-  transition top 0.5s cubic-bezier(.55, 0, .1, 1);
+  transition top 0.5s cubic-bezier(.55, 0, .1, 1)
 
 .b-combo-input:focus
   border-bottom-right-radius 0px
@@ -29,9 +29,11 @@
 .b-combo-suggestions
   visibility hidden
   opacity 0
+  max-height 280px
+  overflow-y scroll
   background #fff
   position absolute
-  top 58px
+  top 57px
   left 0px
   width 100%
   border-left 1px solid #a3a6af
@@ -39,12 +41,12 @@
   border-bottom 1px solid #a3a6af
   border-bottom-right-radius 5px
   border-bottom-left-radius 5px
-  transition all 0.5s cubic-bezier(.55, 0, .1, 1);
+  transition all 0.5s cubic-bezier(.55, 0, .1, 1)
 
 .b-combo-input:focus + .b-combo-suggestions, .b-combo-suggestions.active
   visibility visible
   opacity 1
-  transition all 0.5s cubic-bezier(.55, 0, .1, 1);
+  transition all 0.5s cubic-bezier(.55, 0, .1, 1)
 
 .b-combo-marked
   color #ff7904
